@@ -64,9 +64,9 @@ function WTFocus() {
         consoleStyle.setAttribute("type", "text/css");
         consoleStyle.setAttribute("id", "focusStyles");
         consoleStyle.textContent =
-            "#WTFocusPanel.error {background:darkred;} #WTFocusPanel.warning {background:#CC3300;} #WTFocusPanel[hidden] {display:none;} #WTFocusPanel * {text-align:left} #WTFocusPanel {border:2px solid #fff;z-index:1000;text-shadow:none;font-family:sans-serif;display:block;text-align:left;position: fixed;z-index:10000;background: black;padding: 20px 20px;width:" +
+            "#WTFocusPanel.error {background:darkred;} #WTFocusPanel.warning {background:#CC3300;} #WTFocusPanel[hidden] {display:none;} #WTFocusPanel * {text-align:left; pointer-events: auto;} #WTFocusPanel {border:2px solid #fff;z-index:1000;text-shadow:none;font-family:sans-serif;display:block;text-align:left;position: fixed;z-index:10000;background: black;padding: 20px 20px;width:" +
             WTFpanelWidth +
-            "px;font-size:16px;bottom:20px;right:20px;} #WTFocusPanel button {font-weight:bold;background:none;color:#fff;padding:3px 10px;font-size:14px;border:1px solid #fff;display:inline-block;margin:10px 1em -10px 0;} #WTFocusPanel ul,#WTFocusPanel li {margin:0;padding:0;list-style:none} #WTFocusPanel li {margin:3px 0;background:#fff!important;color:#333!important;padding:2px} #WTFocusPanel details summary {color:white} #WTFocusPanel a[download]{display:block;margin:0.5em 0;color:#fff;text-decoration:underline;border:none;padding:0;}";
+            "px;font-size:16px;bottom:20px;right:20px; pointer-events: none;} #WTFocusPanel button {font-weight:bold;background:none;color:#fff;padding:3px 10px;font-size:14px;border:1px solid #fff;display:inline-block;margin:10px 1em -10px 0;} #WTFocusPanel ul,#WTFocusPanel li {margin:0;padding:0;list-style:none} #WTFocusPanel li {margin:3px 0;background:#fff!important;color:#333!important;padding:2px} #WTFocusPanel details summary {color:white} #WTFocusPanel a[download]{display:block;margin:0.5em 0;color:#fff;text-decoration:underline;border:none;padding:0;}";
         document.querySelector("head").appendChild(consoleStyle);
     }
     function addPanelToPage() {
@@ -75,8 +75,23 @@ function WTFocus() {
         WTFocusPanel.setAttribute("tabindex", "-1");
         WTFocusPanel.setAttribute("role", "region");
         WTFocusPanel.setAttribute("aria-label", "Accessibility properties panel");
+
+        const panelHeader = document.createElement("div");
+        panelHeader.setAttribute("id", "WTFocusPanelHeader");
+        panelHeader.style.cursor = "move";
+        panelHeader.style.padding = "10px";
+        panelHeader.style.backgroundColor = "#333";
+        panelHeader.style.color = "white";
+        panelHeader.textContent = "WTFocus Panel (Drag Me)";
+        WTFocusPanel.appendChild(panelHeader);
+
+        const panelContent = document.createElement("div");
+        panelContent.setAttribute("id", "WTFocusPanelContent");
+        WTFocusPanel.appendChild(panelContent);
+
         document.querySelector("body").appendChild(WTFocusPanel);
         keypressListeners();
+        dragElement(WTFocusPanel);
     }
     function addButtons() {
         const consoleCloseButton = document.createElement("button");
@@ -86,13 +101,14 @@ function WTFocus() {
         consoleCloseButton.addEventListener("click", () => {
             removePanel();
         });
-        WTFocusPanel.appendChild(consoleCloseButton);
+        const panelContent = document.getElementById("WTFocusPanelContent");
+        panelContent.appendChild(consoleCloseButton);
 
         const downloadLink = document.createElement("a");
         downloadLink.textContent = "Download summary (S)";
         downloadLink.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(generateSummary()));
         downloadLink.setAttribute("download", "summary.txt");
-        WTFocusPanel.appendChild(downloadLink);
+        panelContent.appendChild(downloadLink);
     }
     function removePanel() {
         if (document.querySelector("#WTFocusPanel")) {
@@ -163,6 +179,40 @@ function WTFocus() {
             return { name: element.getAttribute('title'), source: 'title attribute' };
         }
         return { name: '', source: 'N/A' };
+    }
+
+    function dragElement(elmnt) {
+        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        if (document.getElementById(elmnt.id + "Header")) {
+            document.getElementById(elmnt.id + "Header").onmousedown = dragMouseDown;
+        } else {
+            elmnt.onmousedown = dragMouseDown;
+        }
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
+        }
+
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+            elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+        }
+
+        function closeDragElement() {
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
     }
 
     function getElementState(el) {
@@ -346,7 +396,8 @@ function WTFocus() {
 
         log("HTML Element: ", tagDetails, style_good_formatting);
 
-        WTFocusPanel.innerHTML = '<ul role="list">' + strPageOutput + "</ul>";
+        const panelContent = document.getElementById("WTFocusPanelContent");
+        panelContent.innerHTML = '<ul role="list">' + strPageOutput + "</ul>";
         addButtons();
         }, 0);
     }
