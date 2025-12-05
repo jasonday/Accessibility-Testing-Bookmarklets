@@ -1,6 +1,6 @@
 "use strict";
 
-function WTFocus() {
+function aName() {
     const startFocusPoint = getActiveElement();
     let elCount = 1;
     let consoleOutput = "";
@@ -14,9 +14,9 @@ function WTFocus() {
     const style_ok_formatting = "color:black;background:#fefbe3;font-weight:bold;";
     const style_unimportant_formatting = "color:black!important;background:#fff!important;";
     //panel
-    const WTFocusPanel = document.createElement("div");
-    const WTFpanelWidth = 400;
-    const WTFfocusOutlineWidth = 7;
+    const aNamePanel = document.createElement("div");
+    const aNamePanelWidth = 400;
+    const aNameFocusOutlineWidth = 7;
     const indicator = '<span aria-hidden="true">👉🏽</span><span class="visually-hidden">Accessible name provided by</span> ';
     const warning = '<span aria-hidden="true">🚨</span> <span class="visually-hidden">Warning</span>';
     let accNameLabel = "Accessible name: ";
@@ -56,42 +56,42 @@ function WTFocus() {
         const focusStyles = document.createElement("style");
         focusStyles.setAttribute("type", "text/css");
         focusStyles.setAttribute("id", "panelStyles");
-        focusStyles.textContent = ".WTFocusTempFocusStyle:focus {outline:" + WTFfocusOutlineWidth + "px solid black!important;outline-offset:" + WTFfocusOutlineWidth + "px!important;overflow:visible;} .visually-hidden {clip-path: inset(100%);clip: rect(1px, 1px, 1px, 1px);height: 1px;overflow: hidden;position: absolute;white-space: nowrap;width: 1px;}";
+        focusStyles.textContent = ".aNameTempFocusStyle:focus {outline:" + aNameFocusOutlineWidth + "px solid black!important;outline-offset:" + aNameFocusOutlineWidth + "px!important;overflow:visible;} .visually-hidden {clip-path: inset(100%);clip: rect(1px, 1px, 1px, 1px);height: 1px;overflow: hidden;position: absolute;white-space: nowrap;width: 1px;}";
         document.querySelector("body").appendChild(focusStyles);
     }
-    function addPanelStyles(WTFpanelWidth) {
+    function addPanelStyles(aNamePanelWidth) {
         const consoleStyle = document.createElement("style");
         consoleStyle.setAttribute("type", "text/css");
         consoleStyle.setAttribute("id", "focusStyles");
         consoleStyle.textContent =
-            "#WTFocusPanel.error {background:darkred;} #WTFocusPanel.warning {background:#CC3300;} #WTFocusPanel[hidden] {display:none;} #WTFocusPanel * {text-align:left; pointer-events: auto;} #WTFocusPanel {border:2px solid #fff;z-index:1000;text-shadow:none;font-family:sans-serif;display:block;text-align:left;position: fixed;z-index:10000;background: black;padding: 20px 20px;width:" +
-            WTFpanelWidth +
-            "px;font-size:16px;bottom:20px;right:20px; pointer-events: none;} #WTFocusPanel button {font-weight:bold;background:none;color:#fff;padding:3px 10px;font-size:14px;border:1px solid #fff;display:inline-block;margin:10px 1em -10px 0;} #WTFocusPanel ul,#WTFocusPanel li {margin:0;padding:0;list-style:none} #WTFocusPanel li {margin:3px 0;background:#fff!important;color:#333!important;padding:2px} #WTFocusPanel details summary {color:white} #WTFocusPanel a[download]{display:block;margin:0.5em 0;color:#fff;text-decoration:underline;border:none;padding:0;}";
+            "#aNamePanel.error {background:darkred;} #aNamePanel.warning {background:#CC3300;} #aNamePanel[hidden] {display:none;} #aNamePanel * {text-align:left; pointer-events: auto;} #aNamePanel {border:2px solid #fff;z-index:1000;text-shadow:none;font-family:sans-serif;display:block;text-align:left;position: fixed;z-index:10000;background: black;padding: 20px 20px;width:" +
+            aNamePanelWidth +
+            "px;font-size:16px;bottom:20px;right:20px; pointer-events: none;} #aNamePanel button {font-weight:bold;background:none;color:#fff;padding:3px 10px;font-size:14px;border:1px solid #fff;display:inline-block;margin:10px 1em -10px 0;} #aNamePanel ul,#aNamePanel li {margin:0;padding:0;list-style:none} #aNamePanel li {margin:3px 0;background:#fff!important;color:#333!important;padding:2px} #aNamePanel details summary {color:white} #aNamePanel a[download]{display:block;margin:0.5em 0;color:#fff;text-decoration:underline;border:none;padding:0;}";
         document.querySelector("head").appendChild(consoleStyle);
     }
     function addPanelToPage() {
-        WTFocusPanel.setAttribute("id", "WTFocusPanel");
-        WTFocusPanel.setAttribute("aria-live", "polite");
-        WTFocusPanel.setAttribute("tabindex", "-1");
-        WTFocusPanel.setAttribute("role", "region");
-        WTFocusPanel.setAttribute("aria-label", "Accessibility properties panel");
+        aNamePanel.setAttribute("id", "aNamePanel");
+        aNamePanel.setAttribute("aria-live", "polite");
+        aNamePanel.setAttribute("tabindex", "-1");
+        aNamePanel.setAttribute("role", "region");
+        aNamePanel.setAttribute("aria-label", "Accessibility properties panel");
         
         const panelHeader = document.createElement("div");
-        panelHeader.setAttribute("id", "WTFocusPanelHeader");
+        panelHeader.setAttribute("id", "aNamePanelHeader");
         panelHeader.style.cursor = "move";
         panelHeader.style.padding = "10px";
         panelHeader.style.backgroundColor = "#333";
         panelHeader.style.color = "white";
-        panelHeader.textContent = "WTFocus Panel (Drag Me)";
-        WTFocusPanel.appendChild(panelHeader);
+        panelHeader.textContent = "aName Panel (Drag Me)";
+        aNamePanel.appendChild(panelHeader);
 
         const panelContent = document.createElement("div");
-        panelContent.setAttribute("id", "WTFocusPanelContent");
-        WTFocusPanel.appendChild(panelContent);
+        panelContent.setAttribute("id", "aNamePanelContent");
+        aNamePanel.appendChild(panelContent);
 
-        document.querySelector("body").appendChild(WTFocusPanel);
+        document.querySelector("body").appendChild(aNamePanel);
         keypressListeners();
-        dragElement(WTFocusPanel);
+        dragElement(aNamePanel);
     }
     function addButtons() {
         const consoleCloseButton = document.createElement("button");
@@ -101,7 +101,7 @@ function WTFocus() {
         consoleCloseButton.addEventListener("click", () => {
             removePanel();
         });
-        const panelContent = document.getElementById("WTFocusPanelContent");
+        const panelContent = document.getElementById("aNamePanelContent");
         panelContent.appendChild(consoleCloseButton);
 
         const downloadLink = document.createElement("a");
@@ -111,8 +111,8 @@ function WTFocus() {
         panelContent.appendChild(downloadLink);
     }
     function removePanel() {
-        if (document.querySelector("#WTFocusPanel")) {
-            document.querySelector("#WTFocusPanel").remove();
+        if (document.querySelector("#aNamePanel")) {
+            document.querySelector("#aNamePanel").remove();
         }
         if (document.querySelector("#panelStyles")) {
             document.querySelector("#panelStyles").remove();
@@ -124,11 +124,11 @@ function WTFocus() {
     }
     function keypressListeners() {
         window.addEventListener("keyup", (event) => {
-            if (event.key === "Escape" && document.querySelector("#WTFocusPanel")) {
+            if (event.key === "Escape" && document.querySelector("#aNamePanel")) {
                 removePanel();
             }
-            if (event.key.toLowerCase() === "s" && document.querySelector("#WTFocusPanel")) {
-                document.querySelector("#WTFocusPanel a[download]").click();
+            if (event.key.toLowerCase() === "s" && document.querySelector("#aNamePanel")) {
+                document.querySelector("#aNamePanel a[download]").click();
             }
         });
     }
@@ -341,7 +341,7 @@ function WTFocus() {
     }
 
     function getAllFocusableElements(rootNode) {
-        const focusableElements = rootNode.querySelectorAll('a[href],button,select,input:not([type="hidden"]),textarea,summary,area,[tabindex]:not(#WTFocusPanel):not([tabindex^="-1"]),[contenteditable]:not([contenteditable="false"])');
+        const focusableElements = rootNode.querySelectorAll('a[href],button,select,input:not([type="hidden"]),textarea,summary,area,[tabindex]:not(#aNamePanel):not([tabindex^="-1"]),[contenteditable]:not([contenteditable="false"])');
         const allFocusables = [...focusableElements];
         
         const allElements = rootNode.querySelectorAll('*');
@@ -408,7 +408,7 @@ function WTFocus() {
                 focusable = activeElement;
             }
 
-            focusable.classList.add("WTFocusTempFocusStyle");
+            focusable.classList.add("aNameTempFocusStyle");
 
             strPageOutput = "";
         const tagName = focusable.tagName.toLowerCase();
@@ -420,17 +420,17 @@ function WTFocus() {
         const { name: accName, source: accNameSource } = getAccessibleName(focusable);
         if (accName === "") {
             isBad = true;
-            WTFocusPanel.classList.add("error");
+            aNamePanel.classList.add("error");
             log(accNameLabel + "No accessible name!", "", style_bad_formatting);
             log("Accessible Name Source: N/A", "", style_bad_formatting);
         } else {
-            WTFocusPanel.classList.remove("error");
+            aNamePanel.classList.remove("error");
             log(accNameLabel, accName, style_good_formatting);
             log("Accessible Name Source: ", accNameSource, style_good_formatting);
         }
 
         if (focusable.hasAttribute('data-dupe')) {
-            WTFocusPanel.classList.add("warning");
+            aNamePanel.classList.add("warning");
             log("Duplicate warning!", "Another element has the same accessible name", style_bad_formatting);
         }
 
@@ -457,7 +457,7 @@ function WTFocus() {
 
         log("HTML Element: ", tagDetails, style_good_formatting);
 
-        const panelContent = document.getElementById("WTFocusPanelContent");
+        const panelContent = document.getElementById("aNamePanelContent");
         panelContent.innerHTML = '<ul role="list">' + strPageOutput + "</ul>";
         addButtons();
         }, 0);
@@ -465,7 +465,7 @@ function WTFocus() {
 
     // Main execution
     removePanel();
-    addPanelStyles(WTFpanelWidth);
+    addPanelStyles(aNamePanelWidth);
     addPanelToPage();
     addFocusStyles();
     checkForDuplicateAccNames();
@@ -478,4 +478,4 @@ function WTFocus() {
         handleFocus({ target: initialFocus });
     }
 }
-WTFocus();
+aName();
