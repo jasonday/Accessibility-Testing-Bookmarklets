@@ -129,16 +129,17 @@ function aName() {
     }
 
     function getActiveElement(root = document) {
-        const activeEl = root.activeElement;
+        let activeEl = root.activeElement;
         if (!activeEl) {
             return null;
         }
-        if (activeEl.shadowRoot) {
-            const shadowActiveEl = getActiveElement(activeEl.shadowRoot);
-            return shadowActiveEl || activeEl;
-        } else {
-            return activeEl;
+        
+        // Keep recursing as long as we find shadow roots with active elements
+        while (activeEl && activeEl.shadowRoot && activeEl.shadowRoot.activeElement) {
+            activeEl = activeEl.shadowRoot.activeElement;
         }
+        
+        return activeEl;
     }
 
     function getAccessibleName(element) {
@@ -403,18 +404,30 @@ function aName() {
     }
 
 
-    function handleFocus(event) {
-        let focusable = event.target;
+    function attachShadowDOMListeners(rootNode) {
+        // Attach focusin listener to this level
+        rootNode.addEventListener('focusin', handleFocus);
         
-        setTimeout(() => {
-            const activeElement = getActiveElement();
-            if (activeElement && activeElement !== focusable) {
-                focusable = activeElement;
+        // Find all elements with shadow roots and attach listeners recursively
+        const allElements = rootNode.querySelectorAll('*');
+        allElements.forEach(element => {
+            if (element.shadowRoot) {
+                attachShadowDOMListeners(element.shadowRoot);
             }
+        });
+    }
 
-            focusable.classList.add("aNameTempFocusStyle");
+    function handleFocus(event) {
+        // Always get the actual deeply nested focused element
+        const focusable = getActiveElement();
+        
+        if (!focusable) {
+            return;
+        }
 
-            strPageOutput = "";
+        focusable.classList.add("aNameTempFocusStyle");
+
+        strPageOutput = "";
         const tagName = focusable.tagName.toLowerCase();
         let tagDetails = "<" + tagName + ">";
         if (focusable.getAttribute("role")) {
@@ -464,7 +477,6 @@ function aName() {
         const panelContent = document.getElementById("aNamePanelContent");
         panelContent.innerHTML = '<ul role="list">' + strPageOutput + "</ul>";
         addButtons();
-        }, 0);
     }
 
     // Main execution
@@ -474,7 +486,8 @@ function aName() {
     addFocusStyles();
     checkForDuplicateAccNames();
 
-    document.addEventListener('focusin', handleFocus);
+    // Attach focusin listeners at all shadow DOM levels
+    attachShadowDOMListeners(document);
     
     // Trigger for the initial focused element
     const initialFocus = getActiveElement();
