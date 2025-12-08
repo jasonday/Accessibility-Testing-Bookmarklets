@@ -13,7 +13,7 @@ javascript: (function () {
     
     script.type = 'text/javascript';
     script.charset = 'UTF-8';
-    script.src = `https://cdn.jsdelivr.net/gh/jasonday/Accessibility-Testing-Bookmarklets@master/aName.js?v=${Date.now()}`;
+    script.src = `https://cdn.jsdelivr.net/gh/jasonday/Accessibility-Testing-Bookmarklets@latest/aName.js?v=${Date.now()}`;
     
     script.onload = () => {
         try {
