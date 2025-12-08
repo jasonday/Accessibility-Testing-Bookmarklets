@@ -66,7 +66,7 @@ function aName() {
         consoleStyle.textContent =
             "#aNamePanel.aNameError {background:darkred;} #aNamePanel.aNameWarning {background:#CC3300;} #aNamePanel[hidden] {display:none;} #aNamePanel * {text-align:left; pointer-events: auto;} #aNamePanel {border:2px solid #fff;z-index:1000;text-shadow:none;font-family:sans-serif;display:block;text-align:left;position: fixed;z-index:10000;background: black;padding: 20px 20px;width:" +
             aNamePanelWidth +
-            "px;font-size:16px;bottom:20px;right:20px; pointer-events: none;} #aNamePanel button {font-weight:bold;background:none;color:#fff;padding:3px 10px;font-size:14px;border:1px solid #fff;display:inline-block;margin:10px 1em -10px 0;} #aNamePanel ul,#aNamePanel li {margin:0;padding:0;list-style:none} #aNamePanel li {margin:3px 0;background:#fff!important;color:#333!important;padding:2px} #aNamePanel details summary {color:white} #aNamePanel a[download]{display:block;margin:0.5em 0;color:#fff;text-decoration:underline;border:none;padding:0;}";
+            "px;font-size:16px;bottom:20px;right:20px; pointer-events: none;} #aNamePanel button {font-weight:bold;background:none;color:#fff;padding:3px 10px;font-size:14px;border:1px solid #fff;display:inline-block;margin:10px 1em -10px 0; max-height: fit-content;} #aNamePanel ul,#aNamePanel li {margin:0;padding:0;list-style:none} #aNamePanel li {margin:3px 0;background:#fff!important;color:#333!important;padding:2px} #aNamePanel details summary {color:white} #aNamePanel a[download]{display:block;margin:0.5em 0;color:#fff;text-decoration:underline;border:none;padding:0;}";
         document.querySelector("head").appendChild(consoleStyle);
     }
     function addPanelToPage() {
