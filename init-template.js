@@ -32,6 +32,9 @@ javascript: (function () {
                 window.aNameInstance.initialized = true;
                 console.log('aName.js auto-executed successfully');
             }
+
+            console.log('aName version:', window.aNameInstance.version || 'unknown');
+            
         } catch (error) {
             console.error('Error initializing aName:', error);
             alert('Failed to initialize aName bookmarklet');
