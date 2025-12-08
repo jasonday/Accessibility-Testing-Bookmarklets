@@ -104,11 +104,6 @@ function aName() {
         const panelContent = document.getElementById("aNamePanelContent");
         panelContent.appendChild(consoleCloseButton);
 
-        const downloadLink = document.createElement("a");
-        downloadLink.textContent = "Download summary (S)";
-        downloadLink.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(generateSummary()));
-        downloadLink.setAttribute("download", "summary.txt");
-        panelContent.appendChild(downloadLink);
     }
     function removePanel() {
         if (document.querySelector("#aNamePanel")) {
@@ -375,27 +370,6 @@ function aName() {
         });
         
         return allFocusables;
-    }
-
-    function generateSummary() {
-        const focusables = getAllFocusableElements(document);
-        let summary = "IMPORTANT DISCLAIMER!\n\nThis text file is a *very approximate representation* \nof what this page may be like for screen reader users:\n\n";
-        
-        focusables.forEach(el => {
-            const { name } = getAccessibleName(el);
-            const role = getElementRole(el);
-            let description = "N/A";
-            if (el.hasAttribute("aria-describedby")) {
-                const describedByIds = el.getAttribute("aria-describedby").split(' ');
-                const rootNode = el.getRootNode();
-                description = describedByIds.map(id => {
-                    const descEl = rootNode.querySelector(`#${id}`);
-                    return descEl ? descEl.textContent : '';
-                }).join(' ');
-            }
-            summary += `Accessible Name: ${name}, Role: ${role}, Description: ${description}\n`;
-        });
-        return summary;
     }
 
     function checkForDuplicateAccNames() {
