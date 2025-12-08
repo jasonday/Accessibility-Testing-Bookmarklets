@@ -366,44 +366,6 @@ function aName() {
         return "generic";
     }
 
-    function getAllFocusableElements(rootNode) {
-        const focusableElements = rootNode.querySelectorAll('a[href],button,select,input:not([type="hidden"]),textarea,summary,area,[tabindex]:not(#aNamePanel):not([tabindex^="-1"]),[contenteditable]:not([contenteditable="false"])');
-        const allFocusables = [...focusableElements];
-        
-        const allElements = rootNode.querySelectorAll('*');
-    
-        allElements.forEach(element => {
-          if (element.shadowRoot) {
-            allFocusables.push(...getAllFocusableElements(element.shadowRoot));
-          }
-        });
-        
-        return allFocusables;
-    }
-
-    function checkForDuplicateAccNames() {
-        const focusables = getAllFocusableElements(document);
-        const accNames = new Map();
-
-        focusables.forEach(el => {
-            const { name } = getAccessibleName(el);
-            if (name) {
-                if (accNames.has(name)) {
-                    accNames.get(name).push(el);
-                } else {
-                    accNames.set(name, [el]);
-                }
-            }
-        });
-
-        accNames.forEach((elements, name) => {
-            if (elements.length > 1) {
-                elements.forEach(el => el.setAttribute('data-dupe', 'true'));
-            }
-        });
-    }
-
-
     function attachShadowDOMListeners(rootNode) {
         // Attach focusin listener to this level
         rootNode.addEventListener('focusin', handleFocus);
@@ -446,11 +408,6 @@ function aName() {
             log("Accessible Name Source: ", accNameSource, style_good_formatting);
         }
 
-        if (focusable.hasAttribute('data-dupe')) {
-            aNamePanel.classList.add("aNameWarning");
-            log("Duplicate warning!", "Another element has the same accessible name", style_bad_formatting);
-        }
-
         isBad = false;
         const state = getElementState(focusable);
         if (state) {
@@ -484,7 +441,6 @@ function aName() {
     addPanelStyles(aNamePanelWidth);
     addPanelToPage();
     addFocusStyles();
-    checkForDuplicateAccNames();
 
     // Attach focusin listeners at all shadow DOM levels
     attachShadowDOMListeners(document);
