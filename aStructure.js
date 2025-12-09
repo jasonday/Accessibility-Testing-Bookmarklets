@@ -4,6 +4,16 @@ if (window.aStructureInstance) {
 }
 
 function aStructure() {
+    const structuralRoles = [
+        // Landmark Roles
+        'banner', 'complementary', 'contentinfo', 'form', 'main', 'navigation', 'region', 'search',
+        // Structure Roles
+        'application', 'article', 'blockquote', 'caption', 'cell', 'columnheader', 'definition', 'deletion',
+        'directory', 'document', 'emphasis', 'feed', 'figure', 'generic', 'group', 'heading', 'img',
+        'insertion', 'list', 'listitem', 'math', 'meter', 'none', 'note', 'paragraph', 'presentation',
+        'row', 'rowgroup', 'rowheader', 'separator', 'strong', 'subscript', 'superscript', 'table',
+        'term', 'time', 'toolbar', 'tooltip'
+    ];
     const semanticElements = [
         'header', 'nav', 'main', 'article', 'section', 'aside', 'footer',
         'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'ul', 'ol', 'li', 'blockquote',
@@ -15,8 +25,11 @@ function aStructure() {
     function findElementsToHighlight(rootNode) {
         // Find elements with ARIA roles
         rootNode.querySelectorAll('[role]').forEach(element => {
-            if (!elementsToHighlight.has(element)) {
-                elementsToHighlight.set(element, `role="${element.getAttribute('role')}"`);
+            const role = element.getAttribute('role');
+            if (structuralRoles.includes(role)) {
+                if (!elementsToHighlight.has(element)) {
+                    elementsToHighlight.set(element, `role="${role}"`);
+                }
             }
         });
 
