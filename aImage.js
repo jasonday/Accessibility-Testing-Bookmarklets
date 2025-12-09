@@ -1,4 +1,5 @@
 "use strict";
+const aImageVersion = "1.0 beta";
 function aImage() {
     //styles
     const style_good_formatting = "font-weight:bold;color:#99f170;background:#333;display:inline-block;padding:3px;";
