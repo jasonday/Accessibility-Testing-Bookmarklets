@@ -205,6 +205,79 @@ function va11y() {
             font-size: 12px;
             color: #aaa;
         }
+
+        /* Color Contrast Checker */
+        .va11y-contrast-section {
+            margin-top: 16px;
+            border-top: 1px solid #444;
+            padding-top: 12px;
+        }
+        .va11y-contrast-section h4 {
+            margin: 0 0 10px;
+            font-size: 13px;
+            color: #ccc;
+            font-weight: bold;
+        }
+        .va11y-contrast-pickers {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+            align-items: flex-end;
+        }
+        .va11y-contrast-picker-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .va11y-contrast-picker-group label {
+            font-size: 12px;
+            color: #aaa;
+        }
+        .va11y-contrast-picker-group input[type="color"] {
+            width: 48px;
+            height: 32px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background: none;
+            cursor: pointer;
+            padding: 1px;
+        }
+        .va11y-contrast-hex {
+            font-size: 11px;
+            color: #888;
+            margin-top: 2px;
+            font-family: monospace;
+        }
+        .va11y-contrast-preview {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 56px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            border: 1px solid #555;
+        }
+        .va11y-contrast-results {
+            background: #1a1a1a;
+            border-radius: 4px;
+            padding: 8px 10px;
+            font-size: 13px;
+        }
+        .va11y-contrast-ratio {
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        .va11y-contrast-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+            color: #ccc;
+            font-size: 12px;
+        }
     `;
 
     // OVERLAY STYLES (Injected into Light DOM)
@@ -889,6 +962,31 @@ function va11y() {
                             </div>
                         </li>
                     </ul>
+
+                    <div class="va11y-contrast-section">
+                        <h4>Color contrast</h4>
+                        <div class="va11y-contrast-pickers">
+                            <div class="va11y-contrast-picker-group">
+                                <label for="va11y-fg-picker">Foreground</label>
+                                <input type="color" id="va11y-fg-picker" value="#000000">
+                                <div class="va11y-contrast-hex" id="va11y-fg-hex">#000000</div>
+                            </div>
+                            <div class="va11y-contrast-picker-group">
+                                <label for="va11y-bg-picker">Background</label>
+                                <input type="color" id="va11y-bg-picker" value="#ffffff">
+                                <div class="va11y-contrast-hex" id="va11y-bg-hex">#ffffff</div>
+                            </div>
+                            <div class="va11y-contrast-preview" id="va11y-contrast-preview">
+                                Aa
+                            </div>
+                        </div>
+                        <div class="va11y-contrast-results" id="va11y-contrast-results">
+                            <div class="va11y-contrast-ratio" id="va11y-contrast-ratio">21:1</div>
+                            <div class="va11y-contrast-row"><span>Normal Text <small>(&lt; 24px/19px bold)</small></span><span id="va11y-cr-normal" class="va11y-good">Pass (4.5:1)</span></div>
+                            <div class="va11y-contrast-row"><span>Large Text <small>(&ge; 24px/19px bold)</small></span><span id="va11y-cr-large" class="va11y-good">Pass (3:1)</span></div>
+                            <div class="va11y-contrast-row"><span>Non-text Elements:</span><span id="va11y-cr-ui" class="va11y-good">Pass (3:1)</span></div>
+                        </div>
+                    </div>
                 `;
 
                 // Structure switch
@@ -947,6 +1045,64 @@ function va11y() {
                         handleGrayscaleToggle();
                     }
                 });
+
+                // Color contrast checker
+                function hexToRgb(hex) {
+                    const r = parseInt(hex.slice(1, 3), 16);
+                    const g = parseInt(hex.slice(3, 5), 16);
+                    const b = parseInt(hex.slice(5, 7), 16);
+                    return [r, g, b];
+                }
+                function relativeLuminance([r, g, b]) {
+                    const toLinear = c => {
+                        const s = c / 255;
+                        return s <= 0.04045 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+                    };
+                    return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
+                }
+                function contrastRatio(hex1, hex2) {
+                    const L1 = relativeLuminance(hexToRgb(hex1));
+                    const L2 = relativeLuminance(hexToRgb(hex2));
+                    const lighter = Math.max(L1, L2);
+                    const darker = Math.min(L1, L2);
+                    return (lighter + 0.05) / (darker + 0.05);
+                }
+                function updateContrast() {
+                    const fg = shadow.getElementById('va11y-fg-picker').value;
+                    const bg = shadow.getElementById('va11y-bg-picker').value;
+                    shadow.getElementById('va11y-fg-hex').textContent = fg;
+                    shadow.getElementById('va11y-bg-hex').textContent = bg;
+
+                    const preview = shadow.getElementById('va11y-contrast-preview');
+                    preview.style.color = fg;
+                    preview.style.background = bg;
+
+                    const ratio = contrastRatio(fg, bg);
+                    const ratioStr = ratio.toFixed(2).replace(/\.?0+$/, '') + ':1';
+                    shadow.getElementById('va11y-contrast-ratio').textContent = ratioStr;
+
+                    const passClass = 'va11y-good';
+                    const failClass = 'va11y-bad';
+
+                    const normalEl = shadow.getElementById('va11y-cr-normal');
+                    const largeEl = shadow.getElementById('va11y-cr-large');
+                    const uiEl = shadow.getElementById('va11y-cr-ui');
+
+                    normalEl.textContent = ratio >= 4.5 ? 'Pass (≥4.5:1)' : 'Fail (<4.5:1)';
+                    normalEl.className = ratio >= 4.5 ? passClass : failClass;
+
+                    largeEl.textContent = ratio >= 3.0 ? 'Pass (≥3:1)' : 'Fail (<3:1)';
+                    largeEl.className = ratio >= 3.0 ? passClass : failClass;
+
+                    uiEl.textContent = ratio >= 3.0 ? 'Pass (≥3:1)' : 'Fail (<3:1)';
+                    uiEl.className = ratio >= 3.0 ? passClass : failClass;
+                }
+
+                const fgPicker = shadow.getElementById('va11y-fg-picker');
+                const bgPicker = shadow.getElementById('va11y-bg-picker');
+                fgPicker.addEventListener('input', updateContrast);
+                bgPicker.addEventListener('input', updateContrast);
+                updateContrast(); // initial render
             },
             deactivate: () => {
                 // Tools remain active when switching tabs
